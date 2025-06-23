@@ -38,9 +38,9 @@ security:
         defaultMappingFactory: "restrictedEquivalentRAMF"
 license:
   certificate: |
-    $${readFile:$${JENKINS_HOME}/license.cert}
+    ${license_cert_content}
   key: |
-    $${readFile:$${JENKINS_HOME}/license.key}
+    ${license_key_content}
 unclassified:
   bundleStorageService:
     activated: true
