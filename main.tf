@@ -262,6 +262,9 @@ resource "aws_instance" "cm_server" {
   associate_public_ip_address = true
 
   user_data = templatefile("cloud-init/cm.tpl", {
+    oc_url = local.oc_url
+    oc_login_user = var.oc_login_user
+    oc_login_pwd  = var.oc_login_pwd
   })
 
   tags = merge(var.tags, {
