@@ -1,0 +1,7 @@
+secrets/
+.auto.tfvars
+*.tfstate
+*.hcl
+.terraform/
+.idea/
+# Local .terraform directories
