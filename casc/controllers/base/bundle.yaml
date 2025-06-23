@@ -3,7 +3,7 @@ id: "base"
 description: "Controller base bundle descriptor"
 version: "3"
 jcasc:
-  - "jenkins.yaml.tpl"
+  - "jenkins.yaml"
 plugins:
   - "plugins.yaml"
 items:

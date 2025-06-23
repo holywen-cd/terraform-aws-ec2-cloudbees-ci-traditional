@@ -5,7 +5,7 @@ jcascMergeStrategy: override
 parent: "base"
 version: "3"
 jcasc:
-  - "jenkins.yaml.tpl"
+  - "jenkins.yaml"
 plugins:
   - "plugins.yaml"
 items:
