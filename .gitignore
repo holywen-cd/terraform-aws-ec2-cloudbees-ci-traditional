@@ -1,4 +1,4 @@
-secrets/
+secrets/license.xml
 .auto.tfvars
 *.tfstate
 *.hcl
