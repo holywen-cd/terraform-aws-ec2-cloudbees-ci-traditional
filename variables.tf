@@ -26,14 +26,32 @@ variable "cm_subdomain" {
   default = "cm"
 }
 
+variable "oc_login_user" {
+    description = "Username for the CloudBees CI Operation Center admin user."
+    default     = "admin"
+    type        = string
+}
+
+variable "oc_login_pwd" {
+  description = "Password for the CloudBees CI Operation Center admin user."
+  default     = "admin"
+  type        = string
+}
+
 variable "key_pair_name" {
   description = "Existing EC2 key pair name"
   default     = "your-keypair-name"
 }
 
-variable "license_file_path" {
-  description = "Content of the CloudBees CD license file."
-  default = "secrets/license.xml"
+variable "license_key_path" {
+  description = "Path of the CloudBees CI license key file."
+  default = "secrets/license.key"
+  type        = string
+}
+
+variable "license_cert_path" {
+  description = "Path of the CloudBees CI license cert file."
+  default = "secrets/license.cert"
   type        = string
 }
 

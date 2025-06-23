@@ -1,0 +1,10 @@
+apiVersion: "2"
+id: "base"
+description: "Controller base bundle descriptor"
+version: "3"
+jcasc:
+  - "jenkins.yaml.tpl"
+plugins:
+  - "plugins.yaml"
+items:
+  - "items.yaml"

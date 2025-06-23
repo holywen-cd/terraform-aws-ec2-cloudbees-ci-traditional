@@ -1,0 +1,11 @@
+plugins:
+- id: saml
+  # Non-CAP plugin
+- id: audit-trail
+- id: jobConfigHistory
+- id: bitbucket-push-and-pull-request # Non-CAP plugin depends on Job DSL plugin(3rd party)
+
+  # Non-CAP plugin using the URL to download
+- id: beer
+  url: "http://artifactory:8082/artifactory/generic-local/org/jenkins/plugins/beer/1.2/beer-1.2.hpi"
+
