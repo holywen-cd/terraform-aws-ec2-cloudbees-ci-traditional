@@ -3,7 +3,7 @@ id: "cjoc"
 description: "Cjoc bundle descriptor"
 version: "2"
 jcasc:
-  - "jenkins.yaml.tpl"
+  - "jenkins.yaml"
 plugins:
   - "plugins.yaml"
 rbac:
