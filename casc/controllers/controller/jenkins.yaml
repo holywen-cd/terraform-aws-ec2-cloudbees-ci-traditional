@@ -11,4 +11,3 @@ unclassified:
     text: "Managed by CasC Controller"
   location:
     adminAddress: "somebody <somebody@somewhere>"
-    url: ${CONTROLLER_URL}
