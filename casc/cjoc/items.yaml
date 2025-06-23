@@ -8,7 +8,7 @@ items:
   displayName: ha
   properties:
   - configurationAsCode:
-      bundle: controller_bundles/controller
+      bundle: main/controller
   - sharedHeaderLabelOptIn:
       optIn: true
   - healthReporting:
