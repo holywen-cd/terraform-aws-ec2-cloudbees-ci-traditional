@@ -1,0 +1,12 @@
+apiVersion: "2"
+id: "controller"
+description: "Controller bundle descriptor"
+jcascMergeStrategy: override
+parent: "base"
+version: "3"
+jcasc:
+  - "jenkins.yaml.tpl"
+plugins:
+  - "plugins.yaml"
+items:
+  - "items.yaml"

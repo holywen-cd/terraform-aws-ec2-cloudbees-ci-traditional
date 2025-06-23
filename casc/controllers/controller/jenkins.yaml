@@ -1,0 +1,14 @@
+unclassified:
+  buildDiscarders:
+    configuredBuildDiscarders:
+      - "jobBuildDiscarder"
+      - simpleBuildDiscarder:
+          discarder:
+            logRotator:
+              artifactNumToKeepStr: "2"
+              numToKeepStr: "2"
+  headerLabel:
+    text: "Managed by CasC Controller"
+  location:
+    adminAddress: "somebody <somebody@somewhere>"
+    url: ${CONTROLLER_URL}

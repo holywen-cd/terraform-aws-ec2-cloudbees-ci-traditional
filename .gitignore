@@ -1,6 +1,7 @@
-secrets/license.xml
+secrets/license.*
 .auto.tfvars
 *.tfstate
+*.tfstate.*
 *.hcl
 .terraform/
 .idea/
