@@ -25,7 +25,7 @@ mkdir -p /var/lib/cloudbees-core-oc/occascbundle
 cp /tmp/terraform-aws-ec2-cloudbees-ci-traditional/casc/cjoc/bundle.yaml /var/lib/cloudbees-core-oc/occascbundle/bundle.yaml
 cp /tmp/terraform-aws-ec2-cloudbees-ci-traditional/casc/cjoc/items.yaml /var/lib/cloudbees-core-oc/occascbundle/items.yaml
 
-cat << EOF > /var/lib/cloudbees-core-oc/occascbundle/jenkins.yaml
+cat << 'EOF' > /var/lib/cloudbees-core-oc/occascbundle/jenkins.yaml
 ${oc_jenkins_yaml_content}
 EOF
 
