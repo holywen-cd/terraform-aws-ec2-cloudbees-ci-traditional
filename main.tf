@@ -14,16 +14,14 @@ data "aws_availability_zones" "available" {}
 locals {
   license_key_content = file(var.license_key_path)
   license_cert_content = file(var.license_cert_path)
-  oc_bundle_yaml_content = file("casc/cjoc/bundle.yaml")
-  oc_items_yaml_content = file("casc/cjoc/items.yaml")
   oc_url = "https://${var.oc_subdomain}.${var.hosted_zone_name}"
   oc_jenkins_yaml_content = templatefile("casc/cjoc/jenkins.yaml.tpl", {
+    license_key_content = local.license_key_content
+    license_cert_content = local.license_cert_content
     oc_login_user = var.oc_login_user
     oc_login_pwd  = var.oc_login_pwd
     oc_url = local.oc_url
   })
-  oc_plugins_yaml_content = file("casc/cjoc/plugins.yaml")
-  oc_rbac_yaml_content = file("casc/cjoc/rbac.yaml")
 
   public_subnet_count = 2
   public_subnet_cidrs = [for i in range(local.public_subnet_count) : cidrsubnet(var.vpc_cidr, 8, i)]
@@ -245,11 +243,7 @@ resource "aws_instance" "oc_server" {
   user_data = templatefile("cloud-init/oc.tpl", {
     license_key_content = local.license_key_content
     license_cert_content = local.license_cert_content
-    oc_bundle_yaml_content = local.oc_bundle_yaml_content
-    oc_items_yaml_content = local.oc_items_yaml_content
     oc_jenkins_yaml_content = local.oc_jenkins_yaml_content
-    oc_plugins_yaml_content = local.oc_plugins_yaml_content
-    oc_rbac_yaml_content = local.oc_rbac_yaml_content
   })
 
   tags = merge(var.tags, {

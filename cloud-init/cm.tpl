@@ -16,3 +16,6 @@ rpm --import "https://downloads.cloudbees.com/cloudbees-core/traditional/client-
 dnf -y upgrade
 
 dnf install -y cloudbees-core-cm
+systemctl stop cloudbees-core-cm
+
+#wait until oc is ready
