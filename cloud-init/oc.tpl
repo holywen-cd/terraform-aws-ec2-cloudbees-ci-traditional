@@ -44,7 +44,7 @@ EOF
 CONFIG_FILE="/etc/sysconfig/cloudbees-core-oc"
 BUNDLE_PATH="/var/lib/cloudbees-core-oc/occascbundle"
 JENKINS_HOME="/var/lib/cloudbees-core-oc"
-CASC_OPTION="-Dcasc.bundle=$${BUNDLE_PATH}"
+CASC_OPTION="-Dcom.cloudbees.jenkins.ha=false -Dcore.casc.config.bundle=$${BUNDLE_PATH}"
 
 # check if the configuration file exists
 if [ ! -f "$CONFIG_FILE" ]; then
@@ -53,8 +53,8 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 # check if the configuration already contains the CasC bundle option
-if grep -q "casc.bundle" "$CONFIG_FILE"; then
-  echo "Already configured: 'casc.bundle' exists in $CONFIG_FILE"
+if grep -q "core.casc.config.bundle" "$CONFIG_FILE"; then
+  echo "Already configured: 'core.casc.config.bundle' exists in $CONFIG_FILE"
 else
   echo "Adding CasC bundle option to $CONFIG_FILE"
 
