@@ -44,7 +44,7 @@ EOF
 CONFIG_FILE="/etc/sysconfig/cloudbees-core-oc"
 BUNDLE_PATH="/var/lib/cloudbees-core-oc/occascbundle"
 JENKINS_HOME="/var/lib/cloudbees-core-oc"
-CASC_OPTION="-Dcom.cloudbees.jenkins.ha=false -Dcore.casc.config.bundle=$${BUNDLE_PATH}"
+CASC_OPTION="-XX:+AlwaysPreTouch -XX:+UseStringDeduplication -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -Dcom.cloudbees.jenkins.ha=false -Dcom.cloudbees.jenkins.ha=false -Dcore.casc.config.bundle=$${BUNDLE_PATH}"
 
 # check if the configuration file exists
 if [ ! -f "$CONFIG_FILE" ]; then

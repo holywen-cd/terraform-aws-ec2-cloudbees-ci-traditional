@@ -1,16 +1,3 @@
-credentials:
-  system:
-    domainCredentials:
-      - credentials:
-          - basicSSHUserPrivateKey:
-              description: "ssh-cred"
-              id: "ssh-cred"
-              privateKeySource:
-                directEntry:
-                  # THE FOLLOWING IS NOT VERY SECURED, AS LONG AS WE DO SO JUST ON LOCALHOST FOR DEMO PURPOSE IT SHOULD BE OK
-                  privateKey: ${readFile:${JENKINS_HOME}/id_rsa}
-              scope: GLOBAL
-              username: "jenkins"
 jenkins:
   clouds:
     - "operationsCenterAgentProvisioningService"
@@ -21,22 +8,6 @@ jenkins:
       name: "staticInboundAgent"
       remoteFS: "/tmp"
       retentionStrategy: "always"
-  - permanent:
-      labelString: "ssh-agent"
-      launcher:
-        nioSsh:
-          connectionDetails:
-            credentialsId: "ssh-cred"
-            displayEnvironment: false
-            keyVerificationStrategy: "blindlyTrust"
-            port: 22
-          host: "agent"
-      name: "ssh-agent"
-      nodeProperties:
-      - cloudbeesHighAvailabilityMultipleExecutors:
-          numExecutors: 2
-      remoteFS: "/tmp"
-      retentionStrategy: "cloudbeesHighAvailability"
   numExecutors: 0
 security:
   gitHostKeyVerificationConfiguration:
