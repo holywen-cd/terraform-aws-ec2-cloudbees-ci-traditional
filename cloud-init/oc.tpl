@@ -15,7 +15,7 @@ git clone https://github.com/holywen-cd/terraform-aws-ec2-cloudbees-ci-tradition
 wget -O /etc/yum.repos.d/cloudbees-core-oc.repo https://downloads.cloudbees.com/cloudbees-core/traditional/operations-center/rolling/rpm/cloudbees-core-oc.repo
 rpm --import "https://downloads.cloudbees.com/cloudbees-core/traditional/operations-center/rolling/rpm/cloudbees.com.key"
 
-dnf -y upgrade
+dnf -y upgrade --nobest
 dnf install -y cloudbees-core-oc
 systemctl stop cloudbees-core-oc
 #clean up jenkins home

@@ -6,10 +6,6 @@ output "client_controller_url" {
   value = "https://${var.cm_subdomain}.${var.hosted_zone_name}"
 }
 
-output "initial_password_path" {
-  value = "/var/lib/jenkins/secrets/initialAdminPassword"
-}
-
 output "alb_dns_name" {
   value = aws_lb.cb_alb.dns_name
 }

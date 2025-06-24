@@ -30,7 +30,7 @@ plugins:
 - id: cloudbees-platform-common
 - id: cloudbees-platform-data
 - id: cloudbees-plugin-usage
-- id: cloudbees-replication
+#- id: cloudbees-replication
 - id: cloudbees-ssh-slaves
 - id: cloudbees-support
 - id: cloudbees-template
