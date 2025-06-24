@@ -13,7 +13,7 @@ yum install -y wget curl
 wget -O /etc/yum.repos.d/cloudbees-core-cm.repo https://downloads.cloudbees.com/cloudbees-core/traditional/client-master/rolling/rpm/cloudbees-core-cm.repo
 rpm --import "https://downloads.cloudbees.com/cloudbees-core/traditional/client-master/rolling/rpm/cloudbees.com.key"
 
-dnf -y upgrade
+dnf -y upgrade --nobest
 
 dnf install -y cloudbees-core-cm
 systemctl stop cloudbees-core-cm
@@ -22,7 +22,8 @@ rm -fr /var/lib/cloudbees-core-cm/*
 # configure variables
 CONFIG_FILE="/etc/sysconfig/cloudbees-core-cm"
 JENKINS_HOME="/var/lib/cloudbees-core-cm"
-CASC_OPTION="--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED -Djenkins.model.Jenkins.crumbIssuerProxyCompatibility=true -DexecutableWar.jetty.disableCustomSessionIdCookieName=true -Dcom.cloudbees.jenkins.ha=false -Dcom.cloudbees.jenkins.replication.warhead.ReplicationServletListener.enabled=true -XX:+AlwaysPreTouch -XX:+UseStringDeduplication -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -Dcore.casc.config.bundle=$${JENKINS_HOME}/bundle-link.yml"
+#CASC_OPTION="--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED -Djenkins.model.Jenkins.crumbIssuerProxyCompatibility=true -DexecutableWar.jetty.disableCustomSessionIdCookieName=true -Dcom.cloudbees.jenkins.ha=false -Dcom.cloudbees.jenkins.replication.warhead.ReplicationServletListener.enabled=true -XX:+AlwaysPreTouch -XX:+UseStringDeduplication -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -Dcore.casc.config.bundle=$${JENKINS_HOME}/bundle-link.yml"
+CASC_OPTION="-Dcore.casc.config.bundle=$${JENKINS_HOME}/bundle-link.yml"
 
 # check if the configuration file exists
 if [ ! -f "$CONFIG_FILE" ]; then
