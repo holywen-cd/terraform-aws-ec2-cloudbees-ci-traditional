@@ -17,11 +17,6 @@ security:
     approvedSignatures:
       - "method java.net.InetAddress getHostName"
       - "staticMethod java.net.InetAddress getLocalHost"
-highAvailability:
-  highAvailabilityConfiguration:
-    developerMode: true
-  highAvailabilityQueueThrottler:
-    maximumLoad: 0
 unclassified:
   buildDiscarders:
     configuredBuildDiscarders:
