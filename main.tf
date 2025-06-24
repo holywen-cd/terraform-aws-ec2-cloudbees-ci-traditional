@@ -126,6 +126,16 @@ resource "aws_security_group" "jenkins_sg" {
   }
 }
 
+resource "aws_security_group_rule" "jenkins_self_ingress" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 65535
+  protocol          = "tcp"
+  security_group_id = aws_security_group.jenkins_sg.id
+  source_security_group_id = aws_security_group.jenkins_sg.id
+  description       = "Allow traffic between instances in the same security group"
+}
+
 ##########################
 # ACM Certificate + DNS Validation
 ##########################
@@ -281,7 +291,7 @@ resource "aws_lb_listener" "https_listener" {
   port              = 443
   protocol          = "HTTPS"
   certificate_arn   = aws_acm_certificate.cert.arn
-  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  ssl_policy = "ELBSecurityPolicy-TLS-1-2-2017-01"
 
   default_action {
     type = "fixed-response"
