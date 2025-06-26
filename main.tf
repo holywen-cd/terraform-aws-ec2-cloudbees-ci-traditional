@@ -322,6 +322,8 @@ resource "aws_instance" "cm_server" {
     oc_login_pwd  = var.oc_login_pwd
   })
 
+  depends_on = [aws_efs_mount_target.efs_mount_target]
+
   tags = merge(var.tags, {
     Name = "cb-cm-server-${count.index + 1}"
   }
