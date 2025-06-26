@@ -27,7 +27,6 @@ mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=
 
 #automount /etc/fstab
 echo "${efs_dns}:/ /mnt/efs nfs4 defaults,_netdev 0 0" >> /etc/fstab
-chown -R cloudbees-core-cm:cloudbees-core-cm /mnt/efs
 
 # install CloudBees Core Client Controller
 wget -O /etc/yum.repos.d/cloudbees-core-cm.repo https://downloads.cloudbees.com/cloudbees-core/traditional/client-master/rolling/rpm/cloudbees-core-cm.repo
@@ -36,6 +35,7 @@ rpm --import "https://downloads.cloudbees.com/cloudbees-core/traditional/client-
 dnf -y upgrade --nobest
 
 dnf install -y cloudbees-core-cm
+chown -R cloudbees-core-cm:cloudbees-core-cm /mnt/efs
 systemctl stop cloudbees-core-cm
 rm -fr /var/lib/cloudbees-core-cm/*
 
