@@ -273,8 +273,9 @@ resource "aws_lb_target_group_attachment" "oc_attach" {
 }
 
 resource "aws_lb_target_group_attachment" "cm_attach" {
+  count            = length(aws_instance.cm_server)
   target_group_arn = aws_lb_target_group.cm_tg.arn
-  target_id        = aws_instance.cm_server.id
+  target_id        = aws_instance.cm_server[count.index].id
   port             = 8080
 }
 
@@ -305,6 +306,7 @@ resource "aws_instance" "oc_server" {
 }
 
 resource "aws_instance" "cm_server" {
+  count = 2
   ami                    = "ami-0b8c2bd77c5e270cf" # RHEL 9 AMI
   instance_type          = "t3.medium"
   subnet_id              = aws_subnet.public[1].id
@@ -321,7 +323,7 @@ resource "aws_instance" "cm_server" {
   })
 
   tags = merge(var.tags, {
-    Name = "cb-cm-server"
+    Name = "cb-cm-server-${count.index + 1}"
   }
   )
 }
