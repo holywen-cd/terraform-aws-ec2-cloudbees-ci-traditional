@@ -126,6 +126,26 @@ resource "aws_security_group" "jenkins_sg" {
   }
 }
 
+resource "aws_security_group" "efs_sg" {
+  name   = "efs-sg"
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    description     = "NFS from EC2 Security Group"
+    from_port       = 2049
+    to_port         = 2049
+    protocol        = "tcp"
+    security_groups = [aws_security_group.jenkins_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group_rule" "jenkins_self_ingress" {
   type              = "ingress"
   from_port         = 0
@@ -134,6 +154,22 @@ resource "aws_security_group_rule" "jenkins_self_ingress" {
   security_group_id = aws_security_group.jenkins_sg.id
   source_security_group_id = aws_security_group.jenkins_sg.id
   description       = "Allow traffic between instances in the same security group"
+}
+
+#create EFS File System
+resource "aws_efs_file_system" "efs" {
+  creation_token = "my-efs"
+  throughput_mode = "bursting"
+  tags = {
+    Name = "my-efs"
+  }
+}
+
+# create EFS Mount Target
+resource "aws_efs_mount_target" "efs_mount_target" {
+  file_system_id  = aws_efs_file_system.efs.id
+  subnet_id       = aws_subnet.public[1].id
+  security_groups = [aws_security_group.efs_sg.id]
 }
 
 ##########################
@@ -209,6 +245,12 @@ resource "aws_lb_target_group" "cm_tg" {
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
 
+  stickiness {
+    enabled = true
+    type    = "lb_cookie"
+    cookie_duration = 86400  # uom: s, default 1 day
+  }
+
   health_check {
     path     = "/login"
     protocol = "HTTP"
@@ -273,6 +315,7 @@ resource "aws_instance" "cm_server" {
 
   user_data = templatefile("cloud-init/cm.tpl", {
     oc_url = local.oc_url
+    efs_dns = "${aws_efs_file_system.efs.id}.efs.${var.region}.amazonaws.com"
     oc_login_user = var.oc_login_user
     oc_login_pwd  = var.oc_login_pwd
   })

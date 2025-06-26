@@ -21,3 +21,7 @@ output "oc_server_public_ip" {
 output "cm_server_public_ip" {
   value = aws_instance.cm_server.public_ip
 }
+output "efs_id" {
+  value = aws_efs_file_system.efs.id
+}
+
