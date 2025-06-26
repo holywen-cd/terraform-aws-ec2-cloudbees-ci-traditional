@@ -9,6 +9,16 @@ java -version
 
 yum install -y wget curl
 
+#mount efs
+yum install -y nfs-utils
+
+mkdir -p /mnt/efs
+mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 ${efs_dns}:/ /mnt/efs
+
+#automount /etc/fstab
+echo "${efs_dns}:/ /mnt/efs nfs4 defaults,_netdev 0 0" >> /etc/fstab
+chown -R cloudbees-core-cm:cloudbees-core-cm /mnt/efs
+
 # install CloudBees Core Client Controller
 wget -O /etc/yum.repos.d/cloudbees-core-cm.repo https://downloads.cloudbees.com/cloudbees-core/traditional/client-master/rolling/rpm/cloudbees-core-cm.repo
 rpm --import "https://downloads.cloudbees.com/cloudbees-core/traditional/client-master/rolling/rpm/cloudbees.com.key"
@@ -21,15 +31,18 @@ rm -fr /var/lib/cloudbees-core-cm/*
 
 # configure variables
 CONFIG_FILE="/etc/sysconfig/cloudbees-core-cm"
-JENKINS_HOME="/var/lib/cloudbees-core-cm"
-#CASC_OPTION="--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED -Djenkins.model.Jenkins.crumbIssuerProxyCompatibility=true -DexecutableWar.jetty.disableCustomSessionIdCookieName=true -Dcom.cloudbees.jenkins.ha=false -Dcom.cloudbees.jenkins.replication.warhead.ReplicationServletListener.enabled=true -XX:+AlwaysPreTouch -XX:+UseStringDeduplication -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -Dcore.casc.config.bundle=$${JENKINS_HOME}/bundle-link.yml"
-CASC_OPTION="-Dcore.casc.config.bundle=$${JENKINS_HOME}/bundle-link.yml"
+JENKINS_HOME="/mnt/efs"
+CASC_OPTION="--add-exports=java.base/jdk.internal.ref=ALL-UNNAMED --add-modules=java.se --add-opens=java.base/java.lang=ALL-UNNAMED --add-opens=java.base/sun.nio.ch=ALL-UNNAMED --add-opens=java.management/sun.management=ALL-UNNAMED --add-opens=jdk.management/com.sun.management.internal=ALL-UNNAMED -Djenkins.model.Jenkins.crumbIssuerProxyCompatibility=true -DexecutableWar.jetty.disableCustomSessionIdCookieName=true -Dcom.cloudbees.jenkins.ha=false -Dcom.cloudbees.jenkins.replication.warhead.ReplicationServletListener.enabled=true -XX:+AlwaysPreTouch -XX:+UseStringDeduplication -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -Dcore.casc.config.bundle=$${JENKINS_HOME}/bundle-link.yml"
+#CASC_OPTION="-Dcore.casc.config.bundle=$${JENKINS_HOME}/bundle-link.yml"
 
 # check if the configuration file exists
 if [ ! -f "$CONFIG_FILE" ]; then
   echo "Error: Configuration file $CONFIG_FILE not found!"
   exit 1
 fi
+
+#update JENKINS_HOME in the configuration file
+sed -i "s|^JENKINS_HOME=.*|JENKINS_HOME=\"$${JENKINS_HOME}\"|" "$CONFIG_FILE"
 
 # check if the configuration already contains the CasC bundle option
 if grep -q "core.casc.config.bundle" "$CONFIG_FILE"; then
