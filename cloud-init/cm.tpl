@@ -12,6 +12,16 @@ yum install -y wget curl
 #mount efs
 yum install -y nfs-utils
 
+echo "Waiting for DNS resolution of ${efs_dns} ..."
+
+while ! getent hosts "${efs_dns}" > /dev/null 2>&1; do
+  echo "DNS not ready for ${efs_dns}, retrying in 5 seconds..."
+  sleep 5
+done
+
+echo "DNS resolved successfully:"
+getent hosts "${efs_dns}"
+
 mkdir -p /mnt/efs
 mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 ${efs_dns}:/ /mnt/efs
 
