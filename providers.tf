@@ -18,4 +18,11 @@ terraform {
 
 provider "aws" {
   region = var.region
+  default_tags {
+    tags = {
+      cb-owner           = var.tags.cb-owner
+      cb-user            = var.tags.cb-user
+      cb-environment     = var.tags.cb-environment
+    }
+  }
 }

@@ -158,11 +158,8 @@ resource "aws_security_group_rule" "jenkins_self_ingress" {
 
 #create EFS File System
 resource "aws_efs_file_system" "efs" {
-  creation_token = "my-efs"
+  # creation_token = "my-efs"
   throughput_mode = "bursting"
-  tags = {
-    Name = "my-efs"
-  }
 }
 
 # create EFS Mount Target
@@ -227,7 +224,7 @@ resource "aws_lb_target_group" "oc_tg" {
   vpc_id   = aws_vpc.main.id
 
   health_check {
-    path     = "/login"
+    path     = "/whoAmI/api/json?tree=authenticated"
     protocol = "HTTP"
     port     = "traffic-port"
     matcher  = "200-399"
@@ -252,7 +249,7 @@ resource "aws_lb_target_group" "cm_tg" {
   }
 
   health_check {
-    path     = "/login"
+    path     = "/whoAmI/api/json?tree=authenticated"
     protocol = "HTTP"
     port     = "traffic-port"
     matcher  = "200-399"
