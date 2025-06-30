@@ -23,7 +23,7 @@ echo "DNS resolved successfully:"
 getent hosts "${efs_dns}"
 
 mkdir -p /mnt/efs
-mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2 ${efs_dns}:/ /mnt/efs
+mount -t nfs4 -o _netdev,rw,bg,hard,intr,rsize=32768,wsize=32768,vers=4.1,proto=tcp,timeo=600,retrans=2,noatime,nodiratime,async ${efs_dns}:/ /mnt/efs
 
 #automount /etc/fstab
 echo "${efs_dns}:/ /mnt/efs nfs4 _netdev,rw,bg,hard,intr,rsize=32768,wsize=32768,vers=4.1,proto=tcp,timeo=600,retrans=2,noatime,nodiratime,async 0 0" >> /etc/fstab
