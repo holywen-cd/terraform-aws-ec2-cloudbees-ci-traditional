@@ -281,12 +281,36 @@ resource "aws_lb_target_group_attachment" "cm_attach" {
 }
 
 
+
+
+
+##########################
+# AWS KEY PAIRS
+##########################
+
+resource "tls_private_key" "ec2_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "generated_key" {
+  key_name   = var.key_pair_name
+  public_key = tls_private_key.ec2_key.public_key_openssh
+}
+
+resource "local_file" "private_key" {
+  content  = tls_private_key.ec2_key.private_key_pem
+  filename = "${path.module}/${var.key_pair_name}.pem"
+  file_permission = "0400"
+}
+
+
 ##########################
 # Jenkins EC2 Instances
 ##########################
 
 resource "aws_instance" "oc_server" {
-  ami                    = "ami-0b8c2bd77c5e270cf" # RHEL 9 AMI
+  ami                    = var.ami_image
   instance_type          = "t3.medium"
   subnet_id              = aws_subnet.public[0].id
   key_name               = var.key_pair_name
@@ -308,7 +332,7 @@ resource "aws_instance" "oc_server" {
 
 resource "aws_instance" "cm_server" {
   count = 2
-  ami                    = "ami-0b8c2bd77c5e270cf" # RHEL 9 AMI
+  ami                    = var.ami_image
   instance_type          = "t3.medium"
   subnet_id              = aws_subnet.public[1].id
   key_name               = var.key_pair_name
