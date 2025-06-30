@@ -26,3 +26,18 @@ This Terraform module is designed to deploy Cloudbees CI Operation Center and Cl
 - Run `terraform plan` to see the execution plan.
 - Run `terraform apply` to create the resources defined in the module.
 - Run `terraform destroy` to remove the resources created by the module.
+
+# Verify
+List resources that have been created (see also default tags in `.auto.tfvars`)
+
+```
+aws resourcegroupstaggingapi get-resources \
+  --tag-filters Key=cb-user,Values=<YOUR_USRENAME> \
+  --region <YOUR_REGION>
+```
+
+```
+aws resourcegroupstaggingapi get-resources \
+  --tag-filters Key=cb-environment,Values=<YOUR_ENVIRONMENT> \
+  --region  <YOUR_REGION>
+```
