@@ -273,14 +273,6 @@ resource "aws_lb_target_group_attachment" "oc_attach" {
   port             = 8888
 }
 
-resource "aws_lb_target_group_attachment" "cm_attach" {
-  count            = length(aws_instance.cm_server)
-  target_group_arn = aws_lb_target_group.cm_tg.arn
-  target_id        = aws_instance.cm_server[count.index].id
-  port             = 8080
-}
-
-
 ##########################
 # Jenkins EC2 Instances
 ##########################
@@ -306,29 +298,55 @@ resource "aws_instance" "oc_server" {
   )
 }
 
-resource "aws_instance" "cm_server" {
-  count = 2
-  ami                    = "ami-0b8c2bd77c5e270cf" # RHEL 9 AMI
-  instance_type          = "t3.medium"
-  subnet_id              = aws_subnet.public[1].id
-  key_name               = var.key_pair_name
+resource "aws_launch_template" "cm_template" {
+  name_prefix   = "cm-server-"
+  image_id      = "ami-0b8c2bd77c5e270cf" # RHEL 9 AMI
+  instance_type = "t3.medium"
+  key_name      = var.key_pair_name
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
-  associate_public_ip_address = true
-
-  user_data = templatefile("cloud-init/cm.tpl", {
+  user_data = base64encode(templatefile("cloud-init/cm.tpl", {
     oc_url = local.oc_url
     efs_dns = "${aws_efs_file_system.efs.id}.efs.${var.region}.amazonaws.com"
     oc_login_user = var.oc_login_user
     oc_login_pwd  = var.oc_login_pwd
-  })
+  }))
 
   depends_on = [aws_efs_mount_target.efs_mount_target]
 
-  tags = merge(var.tags, {
-    Name = "cb-cm-server-${count.index + 1}"
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "cb-cm-server"
+    }
   }
-  )
+}
+
+resource "aws_autoscaling_group" "cm_asg" {
+  name                      = "cm-server-asg-${random_id.suffix.hex}"
+  max_size                  = 2
+  min_size                  = 2
+  desired_capacity          = 2
+  vpc_zone_identifier       = [aws_subnet.public[1].id]  #  subnet ids
+  launch_template {
+    id      = aws_launch_template.cm_template.id
+    version = "$Latest"
+  }
+
+  target_group_arns = [aws_lb_target_group.cm_tg.arn]
+
+  health_check_type         = "EC2"
+  health_check_grace_period = 60
+
+  tag {
+    key                 = "Name"
+    value               = "cb-cm-server-${random_id.suffix.hex}"
+    propagate_at_launch = true
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 ###########################################
