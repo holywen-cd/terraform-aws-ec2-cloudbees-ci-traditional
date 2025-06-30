@@ -70,6 +70,14 @@ fi
 
 echo "Updated $CONFIG_FILE with CasC bundle path"
 
+#check if added CONTROLLER_URL to the config file
+if grep -q "CONTROLLER_URL" "$CONFIG_FILE"; then
+     echo "Already configured: 'CONTROLLER_URL' exists in $CONFIG_FILE"
+   else
+     echo "Adding CONTROLLER_URL to $CONFIG_FILE"
+     echo "CONTROLLER_URL=\"${cm_url}\"" >> "$CONFIG_FILE"
+fi
+
 #wait until oc is ready
 while true; do
   if wget --spider -q ${oc_url}/login; then

@@ -15,6 +15,7 @@ locals {
   license_key_content = file(var.license_key_path)
   license_cert_content = file(var.license_cert_path)
   oc_url = "https://${var.oc_subdomain}.${var.hosted_zone_name}"
+  cm_url = "https://${var.cm_subdomain}.${var.hosted_zone_name}"
   oc_jenkins_yaml_content = templatefile("casc/cjoc/jenkins.yaml.tpl", {
     license_key_content = local.license_key_content
     license_cert_content = local.license_cert_content
@@ -307,6 +308,7 @@ resource "aws_launch_template" "cm_template" {
 
   user_data = base64encode(templatefile("cloud-init/cm.tpl", {
     oc_url = local.oc_url
+    cm_url = local.cm_url
     efs_dns = "${aws_efs_file_system.efs.id}.efs.${var.region}.amazonaws.com"
     oc_login_user = var.oc_login_user
     oc_login_pwd  = var.oc_login_pwd
