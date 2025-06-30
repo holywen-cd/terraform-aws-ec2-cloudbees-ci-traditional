@@ -296,13 +296,13 @@ resource "tls_private_key" "ec2_key" {
 }
 
 resource "aws_key_pair" "generated_key" {
-  key_name   = var.key_pair_name
+  key_name   = "${var.key_pair_name}-${random_id.suffix.hex}"
   public_key = tls_private_key.ec2_key.public_key_openssh
 }
 
 resource "local_file" "private_key" {
   content  = tls_private_key.ec2_key.private_key_pem
-  filename = "${path.module}/${var.key_pair_name}.pem"
+  filename = "${path.module}/${aws_key_pair.generated_key.key_name}.pem"
   file_permission = "0400"
 }
 
@@ -316,7 +316,7 @@ resource "aws_instance" "oc_server" {
   ami                    = var.ami_image
   instance_type          = "t3.medium"
   subnet_id              = aws_subnet.public[0].id
-  key_name               = var.key_pair_name
+  key_name               = aws_key_pair.generated_key.key_name
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
   associate_public_ip_address = true
@@ -338,7 +338,7 @@ resource "aws_instance" "cm_server" {
   ami                    = var.ami_image
   instance_type          = "t3.medium"
   subnet_id              = aws_subnet.public[1].id
-  key_name               = var.key_pair_name
+  key_name               = aws_key_pair.generated_key.key_name
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
   user_data = base64encode(templatefile("cloud-init/cm.tpl", {
