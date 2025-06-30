@@ -116,6 +116,14 @@ resource "aws_security_group" "jenkins_sg" {
   }
 
   ingress {
+      description = "Allow traffic between instances in the same security group"
+      from_port   = 0
+      to_port     = 65535
+      protocol    = "tcp"
+      cidr_blocks = [for s in aws_subnet.public : s.cidr_block]
+  }
+
+  ingress {
     description = "Allow SSH from anywhere"
     from_port   = 22
     to_port     = 22
@@ -149,16 +157,6 @@ resource "aws_security_group" "efs_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
-}
-
-resource "aws_security_group_rule" "jenkins_self_ingress" {
-  type              = "ingress"
-  from_port         = 0
-  to_port           = 65535
-  protocol          = "tcp"
-  security_group_id = aws_security_group.jenkins_sg.id
-  source_security_group_id = aws_security_group.jenkins_sg.id
-  description       = "Allow traffic between instances in the same security group"
 }
 
 #create EFS File System
