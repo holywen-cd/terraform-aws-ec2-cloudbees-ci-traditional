@@ -15,6 +15,7 @@ locals {
   license_key_content = file(var.license_key_path)
   license_cert_content = file(var.license_cert_path)
   oc_url = "https://${var.oc_subdomain}.${var.hosted_zone_name}"
+  cm_url = "https://${var.cm_subdomain}.${var.hosted_zone_name}"
   oc_jenkins_yaml_content = templatefile("casc/cjoc/jenkins.yaml.tpl", {
     license_key_content = local.license_key_content
     license_cert_content = local.license_cert_content
@@ -273,6 +274,7 @@ resource "aws_lb_target_group_attachment" "oc_attach" {
   port             = 8888
 }
 
+
 resource "aws_lb_target_group_attachment" "cm_attach" {
   count            = length(aws_instance.cm_server)
   target_group_arn = aws_lb_target_group.cm_tg.arn
@@ -303,6 +305,7 @@ resource "local_file" "private_key" {
   filename = "${path.module}/${var.key_pair_name}.pem"
   file_permission = "0400"
 }
+
 
 
 ##########################
@@ -338,21 +341,49 @@ resource "aws_instance" "cm_server" {
   key_name               = var.key_pair_name
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
-  associate_public_ip_address = true
-
-  user_data = templatefile("cloud-init/cm.tpl", {
+  user_data = base64encode(templatefile("cloud-init/cm.tpl", {
     oc_url = local.oc_url
+    cm_url = local.cm_url
     efs_dns = "${aws_efs_file_system.efs.id}.efs.${var.region}.amazonaws.com"
     oc_login_user = var.oc_login_user
     oc_login_pwd  = var.oc_login_pwd
-  })
+  }))
 
   depends_on = [aws_efs_mount_target.efs_mount_target]
 
-  tags = merge(var.tags, {
-    Name = "cb-cm-server-${count.index + 1}"
+  tag_specifications {
+    resource_type = "instance"
+    tags = {
+      Name = "cb-cm-server"
+    }
   }
-  )
+}
+
+resource "aws_autoscaling_group" "cm_asg" {
+  name                      = "cm-server-asg-${random_id.suffix.hex}"
+  max_size                  = 2
+  min_size                  = 2
+  desired_capacity          = 2
+  vpc_zone_identifier       = [aws_subnet.public[1].id]  #  subnet ids
+  launch_template {
+    id      = aws_launch_template.cm_template.id
+    version = "$Latest"
+  }
+
+  target_group_arns = [aws_lb_target_group.cm_tg.arn]
+
+  health_check_type         = "EC2"
+  health_check_grace_period = 60
+
+  tag {
+    key                 = "Name"
+    value               = "cb-cm-server-${random_id.suffix.hex}"
+    propagate_at_launch = true
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 ###########################################
