@@ -27,6 +27,10 @@ locals {
   public_subnet_cidrs = [for i in range(local.public_subnet_count) : cidrsubnet(var.vpc_cidr, 8, i)]
 }
 
+resource "random_id" "suffix" {
+  byte_length = 3
+}
+
 ##########################
 # Network
 ##########################
@@ -205,7 +209,7 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 ##########################
 
 resource "aws_lb" "cb_alb" {
-  name               = "cloudbees-alb"
+  name               = "cloudbees-alb-${random_id.suffix.hex}"
   internal           = false
   load_balancer_type = "application"
   subnets            = [for subnet in aws_subnet.public : subnet.id]
@@ -218,7 +222,7 @@ resource "aws_lb" "cb_alb" {
 
 # Operation Center: port 8888
 resource "aws_lb_target_group" "oc_tg" {
-  name     = "cb-oc-tg"
+  name     = "cb-oc-tg-${random_id.suffix.hex}"
   port     = 8888
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
@@ -237,7 +241,7 @@ resource "aws_lb_target_group" "oc_tg" {
 
 # Client Controller: port 8080
 resource "aws_lb_target_group" "cm_tg" {
-  name     = "cb-cm-tg"
+  name     = "cb-cm-tg-${random_id.suffix.hex}"
   port     = 8080
   protocol = "HTTP"
   vpc_id   = aws_vpc.main.id
