@@ -20,7 +20,7 @@ This Terraform module is designed to deploy Cloudbees CI Operation Center and Cl
 # Usage
 - Copy .auto.tfvars.example to .auto.tfvars and fill in the required variables.
 - Create hosted zone in Route53 for DNS configuration. and update the .auto.tfvars file
-- Create EC2 key pair for SSH access to the instances and update the .auto.tfvars file.
+- Create EC2 key pair for SSH access to the instances and update the .auto.tfvars file. (Managed by terraform already -> `main.tf`))
 - Copy wildcard license file (`license.key` and `license.cert`) to the `secrets` directory.
 - Run `terraform init` to initialize the module.
 - Run `terraform plan` to see the execution plan.
