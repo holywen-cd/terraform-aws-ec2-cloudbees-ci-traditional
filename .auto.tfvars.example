@@ -1,13 +1,14 @@
-availability_zone = "us-east-1a" # Required. Availability Zone for the resources.
+availability_zone   = "us-east-1a" # Required. Availability Zone for the resources.
+ami_image           = "ami-0b8c2bd77c5e270cf" # RHEL 9 AMI
 
-oc_subdomain = "oc" # Required. Host name used by the CloudBees CI Operation center instance.
-cm_subdomain = "cm" # Required. Host name used by the CloudBees CI Client controller instance.
-hosted_zone_name = "training.swen.aws.ps.beescloud.com" # Required. Route 53 Hosted Zone to host CloudBees CD subdomains records.
+oc_subdomain        = "oc" # Required. Host name used by the CloudBees CI Operation center instance.
+cm_subdomain        = "cm" # Required. Host name used by the CloudBees CI Client controller instance.
+hosted_zone_name    = "training.swen.aws.ps.beescloud.com" # Required. Route 53 Hosted Zone to host CloudBees CD subdomains records.
 
 key_pair_name = "swen-telstra-training" # Required. Existing EC2 key pair name for SSH access to the instances.
 
 tags = {  # Optional. Tags for the resources created. Default set to empty. Shared among all.
-  "cb-owner" : "team-services"
-  "cb-user" : "swen"
+  "cb-owner"       : "team-services"
+  "cb-user"        : "swen"
   "cb-environment" : "demo-env"
 }

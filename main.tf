@@ -272,15 +272,49 @@ resource "aws_lb_target_group_attachment" "oc_attach" {
   port             = 8888
 }
 
+
+resource "aws_lb_target_group_attachment" "cm_attach" {
+  count            = length(aws_instance.cm_server)
+  target_group_arn = aws_lb_target_group.cm_tg.arn
+  target_id        = aws_instance.cm_server[count.index].id
+  port             = 8080
+}
+
+
+
+
+
+##########################
+# AWS KEY PAIRS
+##########################
+
+resource "tls_private_key" "ec2_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
+resource "aws_key_pair" "generated_key" {
+  key_name   = "${var.key_pair_name}-${random_id.suffix.hex}"
+  public_key = tls_private_key.ec2_key.public_key_openssh
+}
+
+resource "local_file" "private_key" {
+  content  = tls_private_key.ec2_key.private_key_pem
+  filename = "${path.module}/${aws_key_pair.generated_key.key_name}.pem"
+  file_permission = "0400"
+}
+
+
+
 ##########################
 # Jenkins EC2 Instances
 ##########################
 
 resource "aws_instance" "oc_server" {
-  ami                    = "ami-0b8c2bd77c5e270cf" # RHEL 9 AMI
+  ami                    = var.ami_image
   instance_type          = "t3.medium"
   subnet_id              = aws_subnet.public[0].id
-  key_name               = var.key_pair_name
+  key_name               = aws_key_pair.generated_key.key_name
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
   associate_public_ip_address = true
@@ -297,11 +331,12 @@ resource "aws_instance" "oc_server" {
   )
 }
 
-resource "aws_launch_template" "cm_template" {
-  name_prefix   = "cm-server-"
-  image_id      = "ami-0b8c2bd77c5e270cf" # RHEL 9 AMI
-  instance_type = "t3.medium"
-  key_name      = var.key_pair_name
+resource "aws_instance" "cm_server" {
+  count = 2
+  ami                    = var.ami_image
+  instance_type          = "t3.medium"
+  subnet_id              = aws_subnet.public[1].id
+  key_name               = aws_key_pair.generated_key.key_name
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
   user_data = base64encode(templatefile("cloud-init/cm.tpl", {
