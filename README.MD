@@ -2,7 +2,9 @@
 # Overview
 This Terraform module is designed to deploy Cloudbees CI Operation Center and Client Controller on AWS EC2 instances. It provides a flexible and customizable setup for running Cloudbees CI in a cloud environment.
 # Features
-- Deploys Cloudbees CI Operation Center and Client Controller on AWS EC2 instances.
+- Deploys Cloudbees CI Operation Center on AWS EC2 instances.
+- Deploys Cloudbees CI Client Controller on AWS EC2 Auto Scaling Group.
+- Automatically generate ec2 key pair for accessing the EC2 instances.
 - Automatically configures security groups.
 - Automatically install wildcard license file (`license.key` and `license.cert`).
 - Automatically configures VPC and subnet configurations.
@@ -11,7 +13,6 @@ This Terraform module is designed to deploy Cloudbees CI Operation Center and Cl
 # Requirements
 - AWS account with necessary permissions to create EC2 instances, security groups, and VPCs.
 - Predefined hosted zone in Route53 for DNS configuration.
-- Predefined EC2 key pair for SSH access to the instances.
 - Terraform installed on your local machine or CI/CD environment.
 - Cloudbees CI license file (`license.key` and `license.cert`) placed in the `secrets` directory.
 - Terraform version 0.12 or higher.
@@ -20,7 +21,6 @@ This Terraform module is designed to deploy Cloudbees CI Operation Center and Cl
 # Usage
 - Copy .auto.tfvars.example to .auto.tfvars and fill in the required variables.
 - Create hosted zone in Route53 for DNS configuration. and update the .auto.tfvars file
-- Create EC2 key pair for SSH access to the instances and update the .auto.tfvars file. (Managed by terraform already -> `main.tf`))
 - Copy wildcard license file (`license.key` and `license.cert`) to the `secrets` directory.
 - Run `terraform init` to initialize the module.
 - Run `terraform plan` to see the execution plan.
