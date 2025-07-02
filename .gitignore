@@ -5,4 +5,5 @@ secrets/license.*
 *.hcl
 .terraform/
 .idea/
+*.pem
 # Local .terraform directories
