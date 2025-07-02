@@ -5,7 +5,7 @@ oc_subdomain        = "oc" # Required. Host name used by the CloudBees CI Operat
 cm_subdomain        = "cm" # Required. Host name used by the CloudBees CI Client controller instance.
 hosted_zone_name    = "training.swen.aws.ps.beescloud.com" # Required. Route 53 Hosted Zone to host CloudBees CD subdomains records.
 
-key_pair_name = "swen-telstra-training" # Required. Existing EC2 key pair name for SSH access to the instances.
+key_pair_name = "swen-telstra-training" # Required. EC2 key pair name for SSH access to the instances.
 
 tags = {  # Optional. Tags for the resources created. Default set to empty. Shared among all.
   "cb-owner"       : "team-services"
