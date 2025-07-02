@@ -272,18 +272,6 @@ resource "aws_lb_target_group_attachment" "oc_attach" {
   port             = 8888
 }
 
-
-resource "aws_lb_target_group_attachment" "cm_attach" {
-  count            = length(aws_instance.cm_server)
-  target_group_arn = aws_lb_target_group.cm_tg.arn
-  target_id        = aws_instance.cm_server[count.index].id
-  port             = 8080
-}
-
-
-
-
-
 ##########################
 # AWS KEY PAIRS
 ##########################
@@ -331,12 +319,12 @@ resource "aws_instance" "oc_server" {
   )
 }
 
-resource "aws_instance" "cm_server" {
-  count = 2
-  ami                    = var.ami_image
+resource "aws_launch_template" "cm_template" {
+  name_prefix            = "cm-server-"
+  image_id               = var.ami_image
   instance_type          = "t3.medium"
-  subnet_id              = aws_subnet.public[1].id
   key_name               = aws_key_pair.generated_key.key_name
+
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
   user_data = base64encode(templatefile("cloud-init/cm.tpl", {
