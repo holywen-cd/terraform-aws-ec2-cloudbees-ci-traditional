@@ -15,21 +15,21 @@ jenkins:
     - "operationsCenterAgentProvisioningService"
   nodes:
     - permanent:
-      labelString: "ssh-agent"
-      launcher:
-        nioSsh:
-          connectionDetails:
-            credentialsId: "ssh-cred"
-            displayEnvironment: false
-            keyVerificationStrategy: "blindlyTrust"
-            port: 22
-          host: "${AGENT1_PRIVATE_IP}"
-      name: "ssh-agent"
-      nodeProperties:
-        - cloudbeesHighAvailabilityMultipleExecutors:
-            numExecutors: 2
-      remoteFS: "/tmp"
-      retentionStrategy: "cloudbeesHighAvailability"
+        labelString: "ssh-agent"
+        launcher:
+          nioSsh:
+            connectionDetails:
+              credentialsId: "ssh-cred"
+              displayEnvironment: false
+              keyVerificationStrategy: "blindlyTrust"
+              port: 22
+            host: "${AGENT1_PRIVATE_IP}"
+        name: "ssh-agent"
+        nodeProperties:
+          - cloudbeesHighAvailabilityMultipleExecutors:
+              numExecutors: 2
+        remoteFS: "/tmp"
+        retentionStrategy: "cloudbeesHighAvailability"
   numExecutors: 0
 security:
   gitHostKeyVerificationConfiguration:
