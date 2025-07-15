@@ -9,7 +9,7 @@ credentials:
                 directEntry:
                   privateKey: ${readFile:${JENKINS_HOME}/id_rsa}
               scope: GLOBAL
-              username: "jenkins"
+              username: "ec2-user"
 jenkins:
   clouds:
     - "operationsCenterAgentProvisioningService"
