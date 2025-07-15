@@ -11,6 +11,18 @@ data "aws_route53_zone" "main" {
 
 data "aws_availability_zones" "available" {}
 
+data "aws_instances" "asg_instances" {
+  filter {
+    name   = "tag:aws:autoscaling:groupName"
+    values = [aws_autoscaling_group.cm_asg.name]
+  }
+
+  filter {
+    name   = "instance-state-name"
+    values = ["running"]
+  }
+}
+
 locals {
   license_key_content = file(var.license_key_path)
   license_cert_content = file(var.license_cert_path)
@@ -333,6 +345,8 @@ resource "aws_launch_template" "cm_template" {
     efs_dns = "${aws_efs_file_system.efs.id}.efs.${var.region}.amazonaws.com"
     oc_login_user = var.oc_login_user
     oc_login_pwd  = var.oc_login_pwd
+    private_key_content = tls_private_key.ec2_key.private_key_pem
+    agent1_private_ip = aws_instance.agent1.private_ip
   }))
 
   depends_on = [aws_efs_mount_target.efs_mount_target]
@@ -370,6 +384,25 @@ resource "aws_autoscaling_group" "cm_asg" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+resource "aws_instance" "agent1" {
+  ami                    = var.ami_image
+  instance_type          = "t3.medium"
+  subnet_id              = aws_subnet.public[0].id
+  key_name               = aws_key_pair.generated_key.key_name
+  vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
+
+  associate_public_ip_address = true
+
+  user_data = templatefile("cloud-init/agent.tpl", {
+
+  })
+
+  tags = merge(var.tags, {
+    Name = "cb-agent1"
+  }
+  )
 }
 
 ###########################################

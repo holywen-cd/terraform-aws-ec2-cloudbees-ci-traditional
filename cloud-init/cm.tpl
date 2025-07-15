@@ -37,6 +37,14 @@ dnf -y upgrade --nobest
 dnf install -y cloudbees-core-cm
 chown -R cloudbees-core-cm:cloudbees-core-cm /mnt/efs
 systemctl stop cloudbees-core-cm
+
+cat <<EOF > /mnt/efs/id_rsa
+${private_key_content}
+EOF
+
+chown cloudbees-core-cm:cloudbees-core-cm /mnt/efs/id_rsa
+chmod 600 /mnt/efs/id_rsa
+
 rm -fr /var/lib/cloudbees-core-cm/*
 
 # configure variables
@@ -76,6 +84,7 @@ if grep -q "CONTROLLER_URL" "$CONFIG_FILE"; then
    else
      echo "Adding CONTROLLER_URL to $CONFIG_FILE"
      echo "CONTROLLER_URL=\"${cm_url}\"" >> "$CONFIG_FILE"
+     echo "AGENT1_PRIVATE_IP=\"${agent1_private_ip}\"" >> "$CONFIG_FILE"
 fi
 
 #wait until oc is ready
