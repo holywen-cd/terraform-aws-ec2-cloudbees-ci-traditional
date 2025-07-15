@@ -1,13 +1,35 @@
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - basicSSHUserPrivateKey:
+              description: "ssh-cred"
+              id: "ssh-cred"
+              privateKeySource:
+                directEntry:
+                  privateKey: ${readFile:${JENKINS_HOME}/id_rsa}
+              scope: GLOBAL
+              username: "jenkins"
 jenkins:
   clouds:
     - "operationsCenterAgentProvisioningService"
   nodes:
-  - permanent:
-      labelString: "staticInbound"
-      launcher: "inbound"
-      name: "staticInboundAgent"
+    - permanent:
+      labelString: "ssh-agent"
+      launcher:
+        nioSsh:
+          connectionDetails:
+            credentialsId: "ssh-cred"
+            displayEnvironment: false
+            keyVerificationStrategy: "blindlyTrust"
+            port: 22
+          host: "${AGENT1_PRIVATE_IP}"
+      name: "ssh-agent"
+      nodeProperties:
+        - cloudbeesHighAvailabilityMultipleExecutors:
+            numExecutors: 2
       remoteFS: "/tmp"
-      retentionStrategy: "always"
+      retentionStrategy: "cloudbeesHighAvailability"
   numExecutors: 0
 security:
   gitHostKeyVerificationConfiguration:
