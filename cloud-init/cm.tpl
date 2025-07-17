@@ -62,6 +62,9 @@ fi
 #update JENKINS_HOME in the configuration file
 sed -i "s|^JENKINS_HOME=.*|JENKINS_HOME=\"$${JENKINS_HOME}\"|" "$CONFIG_FILE"
 
+# update JENKINS_ARGS in the configuration file
+sed -i "s|^JENKINS_ARGS=.*|JENKINS_ARGS=\"--pluginroot=/var/cache/cloudbees-core-cm/plugins\"|" "$CONFIG_FILE"
+
 # check if the configuration already contains the CasC bundle option
 if grep -q "core.casc.config.bundle" "$CONFIG_FILE"; then
   echo "Already configured: 'core.casc.config.bundle' exists in $CONFIG_FILE"
