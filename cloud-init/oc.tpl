@@ -16,7 +16,7 @@ wget -O /etc/yum.repos.d/cloudbees-core-oc.repo https://downloads.cloudbees.com/
 rpm --import "https://downloads.cloudbees.com/cloudbees-core/traditional/operations-center/rolling/rpm/cloudbees.com.key"
 
 dnf -y upgrade --nobest
-dnf install -y cloudbees-core-oc
+dnf install -y cloudbees-core-oc-${cbci_version}
 systemctl stop cloudbees-core-oc
 #clean up jenkins home
 rm -fr  /var/lib/cloudbees-core-oc/*
@@ -69,5 +69,3 @@ fi
 echo "Updated $CONFIG_FILE with CasC bundle path"
 
 systemctl start cloudbees-core-oc
-
-

@@ -34,7 +34,7 @@ rpm --import "https://downloads.cloudbees.com/cloudbees-core/traditional/client-
 
 dnf -y upgrade --nobest
 
-dnf install -y cloudbees-core-cm
+dnf install -y cloudbees-core-cm-${cbci_version}
 chown -R cloudbees-core-cm:cloudbees-core-cm /mnt/efs
 systemctl stop cloudbees-core-cm
 

@@ -26,6 +26,7 @@ data "aws_instances" "asg_instances" {
 locals {
   license_key_content = file(var.license_key_path)
   license_cert_content = file(var.license_cert_path)
+  cbci_version = "2.492.2.3"
   oc_url = "https://${var.oc_subdomain}.${var.hosted_zone_name}"
   cm_url = "https://${var.cm_subdomain}.${var.hosted_zone_name}"
   oc_jenkins_yaml_content = templatefile("casc/cjoc/jenkins.yaml.tpl", {
@@ -322,11 +323,12 @@ resource "aws_instance" "oc_server" {
   user_data = templatefile("cloud-init/oc.tpl", {
     license_key_content = local.license_key_content
     license_cert_content = local.license_cert_content
+    cbci_version = local.cbci_version
     oc_jenkins_yaml_content = local.oc_jenkins_yaml_content
   })
 
   tags = merge(var.tags, {
-    Name = "cb-oc-server"
+    Name = "cb-oc-server-${random_id.suffix.hex}"
   }
   )
 }
@@ -342,6 +344,7 @@ resource "aws_launch_template" "cm_template" {
   user_data = base64encode(templatefile("cloud-init/cm.tpl", {
     oc_url = local.oc_url
     cm_url = local.cm_url
+    cbci_version = local.cbci_version
     efs_dns = "${aws_efs_file_system.efs.id}.efs.${var.region}.amazonaws.com"
     oc_login_user = var.oc_login_user
     oc_login_pwd  = var.oc_login_pwd
@@ -396,13 +399,15 @@ resource "aws_instance" "agent1" {
   associate_public_ip_address = true
 
   user_data = templatefile("cloud-init/agent.tpl", {
-
+    oc_login_user = var.oc_login_user
+    oc_login_pwd  = var.oc_login_pwd
+    oc_url = local.oc_url
   })
 
   tags = merge(var.tags, {
-    Name = "cb-agent1"
-  }
-  )
+       Name = "cb-agent1-${random_id.suffix.hex}"
+     }
+     )
 }
 
 ###########################################
