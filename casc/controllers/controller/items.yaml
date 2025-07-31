@@ -3,6 +3,44 @@ removeStrategy:
   items: NONE
 items:
 - kind: pipeline
+  name: testSharedAgent
+  concurrentBuild: true
+  definition:
+    cpsFlowDefinition:
+      sandbox: true
+      script: |
+        pipeline {
+            agent {
+                label 'mySharedAgent'
+            }
+
+            stages {
+                stage('Hello') {
+                    steps {
+                        echo 'Hello World'
+                        sh 'env'
+                    }
+                }
+            }
+        }
+  description: ''
+  disabled: false
+  displayName: testSharedAgent
+  properties:
+    - buildDiscarder:
+        strategy:
+          logRotator:
+            removeLastBuild: false
+            artifactDaysToKeep: -1
+            artifactNumToKeep: -1
+            daysToKeep: -1
+            numToKeep: 10
+    - pipelineTriggers:
+        triggers:
+          - cron:
+              spec: '* * * * *'
+  resumeBlocked: false
+- kind: pipeline
   name: testGetControllerName
   concurrentBuild: true
   definition:

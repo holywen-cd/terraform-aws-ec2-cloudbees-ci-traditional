@@ -26,7 +26,7 @@ output "agent1_private_ip" {
   value = aws_instance.agent1.private_ip
 }
 
-output "asg_public_ips" {
+output "client_controller_asg_public_ips" {
   value = data.aws_instances.asg_instances.public_ips
 }
 
