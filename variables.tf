@@ -3,7 +3,7 @@ variable "region" {
 }
 
 variable "ami_image" {
-  default = "ami-0b8c2bd77c5e270cf"
+  default = "ami-00f1cb0e129bb040e" #amazon/RHEL-9.6.0_HVM-20250730-x86_64-0-Hourly2-GP3
 }
 
 variable "vpc_cidr" {

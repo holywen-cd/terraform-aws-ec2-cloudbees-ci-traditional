@@ -180,8 +180,9 @@ resource "aws_efs_file_system" "efs" {
 
 # create EFS Mount Target
 resource "aws_efs_mount_target" "efs_mount_target" {
+  count = local.public_subnet_count
   file_system_id  = aws_efs_file_system.efs.id
-  subnet_id       = aws_subnet.public[1].id
+  subnet_id       = aws_subnet.public[count.index].id
   security_groups = [aws_security_group.efs_sg.id]
 }
 
@@ -367,7 +368,7 @@ resource "aws_autoscaling_group" "cm_asg" {
   max_size                  = 2
   min_size                  = 2
   desired_capacity          = 2
-  vpc_zone_identifier       = [aws_subnet.public[1].id]  #  subnet ids
+  vpc_zone_identifier       = [for s in aws_subnet.public : s.id]  #  subnet ids
   launch_template {
     id      = aws_launch_template.cm_template.id
     version = "$Latest"

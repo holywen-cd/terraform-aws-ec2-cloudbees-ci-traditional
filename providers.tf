@@ -10,13 +10,6 @@ terraform {
     }
   }
 
-#   cloud {
-#     organization = "holywen"
-#     workspaces {
-#       name = "telstra-training-aws"
-#     }
-#   }
-
   required_version = ">= 1.3.0"
 }
 
