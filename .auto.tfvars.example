@@ -1,5 +1,5 @@
 availability_zone   = "us-east-1a" # Required. Availability Zone for the resources.
-ami_image           = "ami-0b8c2bd77c5e270cf" # RHEL 9 AMI
+ami_image           = "ami-0225644bfadc204f7" # RHEL-9.8.0_HVM-20260728-x86_64-0-Hourly2-GP3 (latest RHEL 9 AMI as of 2026-08-10)
 
 oc_subdomain        = "oc" # Required. Host name used by the CloudBees CI Operation center instance.
 cm_subdomain        = "cm" # Required. Host name used by the CloudBees CI Client controller instance.

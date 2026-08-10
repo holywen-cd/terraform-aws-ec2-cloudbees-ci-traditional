@@ -329,7 +329,7 @@ resource "aws_instance" "oc_server" {
   })
 
   tags = merge(var.tags, {
-    Name = "cb-oc-server-${random_id.suffix.hex}"
+    Name = "cb-oc-server"
   }
   )
 }
@@ -371,7 +371,7 @@ resource "aws_autoscaling_group" "cm_asg" {
   vpc_zone_identifier       = [for s in aws_subnet.public : s.id]  #  subnet ids
   launch_template {
     id      = aws_launch_template.cm_template.id
-    version = "$Latest"
+    version = aws_launch_template.cm_template.latest_version
   }
 
   target_group_arns = [aws_lb_target_group.cm_tg.arn]
@@ -383,6 +383,14 @@ resource "aws_autoscaling_group" "cm_asg" {
     key                 = "Name"
     value               = "cb-cm-server-${random_id.suffix.hex}"
     propagate_at_launch = true
+  }
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+      instance_warmup        = 480
+    }
   }
 
   lifecycle {
@@ -406,7 +414,7 @@ resource "aws_instance" "agent1" {
   })
 
   tags = merge(var.tags, {
-       Name = "cb-agent1-${random_id.suffix.hex}"
+       Name = "cb-agent1"
      }
      )
 }

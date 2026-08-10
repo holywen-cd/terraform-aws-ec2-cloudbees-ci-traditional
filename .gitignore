@@ -7,3 +7,6 @@ secrets/license.*
 .idea/
 *.pem
 # Local .terraform directories
+.terraformrc.local
+.omc/
+demo-evidence/
