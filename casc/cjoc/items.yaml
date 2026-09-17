@@ -8,7 +8,7 @@ items:
   displayName: ha
   properties:
   - configurationAsCode:
-      bundle: main/controller
+      bundle: casc-demo/controller
   - sharedHeaderLabelOptIn:
       optIn: true
   - healthReporting:

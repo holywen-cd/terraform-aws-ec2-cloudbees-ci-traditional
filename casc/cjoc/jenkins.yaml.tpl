@@ -54,6 +54,8 @@ unclassified:
                 remote: "https://github.com/holywen-cd/terraform-aws-ec2-cloudbees-ci-traditional"
                 traits:
                 - "gitBranchDiscovery"
+                - headRegexFilter:
+                    regex: "casc-demo"
     checkOutTimeout: 600
     pollingPeriod: 120
     purgeOnDeactivation: false
