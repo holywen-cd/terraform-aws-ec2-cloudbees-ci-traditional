@@ -61,3 +61,27 @@ items:
   disabled: false
   displayName: test-agent
   resumeBlocked: false
+- kind: pipeline
+  name: test-agent1
+  concurrentBuild: true
+  definition:
+    cpsFlowDefinition:
+      sandbox: true
+      script: |
+        pipeline {
+            agent {
+                label 'ssh-agent'
+            }
+            stages {
+                stage('Hello') {
+                    steps {
+                        echo 'Hello from agent1 (ssh-agent node)'
+                        sh 'hostname; whoami; env | sort'
+                    }
+                }
+            }
+        }
+  description: 'Direct connectivity test for the ssh-agent node (agent1)'
+  disabled: false
+  displayName: test-agent1
+  resumeBlocked: false
