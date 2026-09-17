@@ -8,6 +8,6 @@ unclassified:
               artifactNumToKeepStr: "2"
               numToKeepStr: "2"
   headerLabel:
-    text: "Managed by CasC Controller"
+    text: "Managed by CasC Controller [autoreload-test-1789615442]"
   location:
     adminAddress: "somebody <somebody@somewhere>"
