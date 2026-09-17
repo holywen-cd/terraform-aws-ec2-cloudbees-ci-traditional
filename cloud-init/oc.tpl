@@ -9,7 +9,7 @@ java -version
 
 yum install -y wget git
 
-git clone https://github.com/holywen-cd/terraform-aws-ec2-cloudbees-ci-traditional /tmp/terraform-aws-ec2-cloudbees-ci-traditional
+git clone -b casc-demo https://github.com/holywen-cd/terraform-aws-ec2-cloudbees-ci-traditional /tmp/terraform-aws-ec2-cloudbees-ci-traditional
 
 # install CloudBees Core Operations Center
 wget -O /etc/yum.repos.d/cloudbees-core-oc.repo https://downloads.cloudbees.com/cloudbees-core/traditional/operations-center/rolling/rpm/cloudbees-core-oc.repo
