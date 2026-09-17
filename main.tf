@@ -365,9 +365,10 @@ resource "aws_launch_template" "cm_template" {
 
 resource "aws_autoscaling_group" "cm_asg" {
   name                      = "cm-server-asg-${random_id.suffix.hex}"
-  max_size                  = 2
-  min_size                  = 2
-  desired_capacity          = 2
+  # HA (2-node) not needed for this CasC demo - single CM node.
+  max_size                  = 1
+  min_size                  = 1
+  desired_capacity          = 1
   vpc_zone_identifier       = [for s in aws_subnet.public : s.id]  #  subnet ids
   launch_template {
     id      = aws_launch_template.cm_template.id
